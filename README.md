@@ -1,0 +1,1 @@
+A s'imple setup with cmake and makefile for create a project
