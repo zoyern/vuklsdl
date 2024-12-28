@@ -37,7 +37,9 @@ headers:
 	@$(UPDATEFILE2) $(DEFAULT_DEF) >> $(HEADER_DIR)/$(HEADER_FILE)
 	@echo "" >> $(HEADER_DIR)/$(HEADER_FILE);
 
-	@echo "#ifndef CLASS_HPP\n# define CLASS_HPP\n" > $(SRC_DIR)/class.hpp
+	@echo "#ifndef CLASS_HPP" > $(SRC_DIR)/class.hpp
+	@echo "# define CLASS_HPP" >> $(SRC_DIR)/class.hpp
+	@echo "" >> $(SRC_DIR)/class.hpp
 
 	@find $(SRC_DIR) -type f -name "*.hpp" | while read file; do \
 		dir=$$(dirname $$file); \
