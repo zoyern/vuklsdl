@@ -3,7 +3,7 @@ NAME = vulksdl
 NAME_OUT = vulksdl
 
 # Dépendances requises
-DEPS = build-essential cmake git libvulkan-dev vulkan-tools libsdl2-dev
+DEPS = sudo add-apt-repository universe && sudo apt update -y && sudo apt upgrade -y && sudo apt-get update --allow-releaseinfo-change && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
 CMAKEVER = 3.10
 
 # Répertoires
@@ -44,7 +44,7 @@ all: prepare headers cmake
 # Préparer les dossiers et fichiers nécessaires
 prepare:
 	@echo "Installation des dépendances..."
-	@sudo apt install -y $(DEPS)
+	@$(DEPS)
 	@echo "Préparation des dossiers et fichiers..."
 	@mkdir -p $(SRC_DIR)
 	@mkdir -p $(SRC_DIR)/$(NAME_CAMEL)
