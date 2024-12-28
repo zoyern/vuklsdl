@@ -3,7 +3,7 @@ NAME = vulksdl
 NAME_OUT = vulksdl
 
 # Dépendances requises
-DEPS = sudo add-apt-repository universe && sudo apt update -y && sudo apt upgrade -y && sudo apt-get update --allow-releaseinfo-change && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo add-apt-repository universe && sudo apt update -y && sudo apt upgrade -y && sudo apt-get update --allow-releaseinfo-change && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
 CMAKEVER = 3.10
 
 # Répertoires
