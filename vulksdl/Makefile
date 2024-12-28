@@ -1,38 +1,4 @@
-# Nom du projet
-NAME = vulksdl
-NAME_OUT = vulksdl
-
-# Dépendances requises
-DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo add-apt-repository universe && sudo apt update -y && sudo apt upgrade -y && sudo apt-get update --allow-releaseinfo-change && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
-CMAKEVER = 3.10
-
-# Répertoires
-OUT_DIR = .
-BUILD_DIR = build
-INCLUDE_DIR = $(BUILD_DIR)/includes
-CMAKE_DIR = $(BUILD_DIR)/cmake
-SRC_DIR = src
-SHADERS_DIR = shaders
-MAIN_DIR = $(SRC_DIR)/main.cpp
-HEADER_FILE = def.hpp
-NAME_UPPER = $(shell echo $(NAME) | tr a-z A-Z)
-NAME_CAMEL = $(shell echo $(NAME) | sed -r 's/(^|_)([a-z])/\U\2/g')
-
-DEFAULT_HPP = template/hpp/default
-DEFAULT_CPP = template/cpp/default
-DEFAULT_MAIN = template/cpp/main
-DEFAULT_DEF = template/hpp/def
-# Fichiers
-CMAKE_FILE = $(BUILD_DIR)/CMakeLists.txt
-
-# Commandes
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Werror
-
-UPDATEFILE	= sed -e 's/{{NAME_CAMEL}}/$(NAME_CAMEL)/g' \
-				-e 's/{{NAME_UPPER}}/$(NAME_UPPER)/g' \
-				-e 's/{{HEADER_FILE}}/$(HEADER_FILE)/g' \
-				-e 's/{{NAME}}/$(NAME)/g' \
+include settings/build.mk
 
 .PHONY: all clean fclean re install prepare cmake run headers
 
@@ -52,33 +18,24 @@ prepare:
 	@mkdir -p $(INCLUDE_DIR)
 	@mkdir -p $(SHADERS_DIR)
 	@mkdir -p $(CMAKE_DIR)
-	@if [ ! -f "$(CMAKE_FILE)" ]; then \
-		echo "cmake_minimum_required(VERSION $(CMAKEVER))" > $(CMAKE_FILE); \
-		echo "project($(NAME))" >> $(CMAKE_FILE); \
-		echo "set(CMAKE_CXX_STANDARD 17)" >> $(CMAKE_FILE); \
-		echo "find_package(Vulkan REQUIRED)" >> $(CMAKE_FILE); \
-		echo "find_package(SDL2 REQUIRED)" >> $(CMAKE_FILE); \
-		echo "include_directories(\$${Vulkan_INCLUDE_DIRS} \$${SDL2_INCLUDE_DIRS} ../$(INCLUDE_DIR))" >> $(CMAKE_FILE); \
-		echo "file(GLOB_RECURSE SOURCES ../$(SRC_DIR)/*.cpp)" >> $(CMAKE_FILE); \
-		echo "add_executable($(NAME) \$${SOURCES})" >> $(CMAKE_FILE); \
-		echo "set_target_properties($(NAME) PROPERTIES OUTPUT_NAME ../../$(OUT_DIR)/$(NAME_OUT))" >> $(CMAKE_FILE); \
-		echo "target_link_libraries($(NAME) Vulkan::Vulkan SDL2::SDL2)" >> $(CMAKE_FILE); \
+	@if [ ! -f "$(BUILD_DIR)/$(CMAKE_FILE)" ]; then \
+		$(UPDATEFILE2) $(DEFAULT_CMAKE) > $(BUILD_DIR)/$(CMAKE_FILE); \
 	fi
 	@if [ ! -f "$(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).cpp" ]; then \
-		$(UPDATEFILE) $(DEFAULT_CPP) > $(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).cpp; \
+		$(UPDATEFILE2) $(DEFAULT_CPP) > $(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).cpp; \
 	fi
 	@if [ ! -f "$(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).hpp" ]; then \
-		$(UPDATEFILE) $(DEFAULT_HPP) > $(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).hpp; \
+		$(UPDATEFILE2) $(DEFAULT_HPP) > $(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).hpp; \
 	fi
 	@if [ ! -f "$(MAIN_DIR)" ]; then \
-		$(UPDATEFILE) $(DEFAULT_MAIN) > $(MAIN_DIR); \
+		$(UPDATEFILE2) $(DEFAULT_MAIN) > $(MAIN_DIR)/$(MAIN_FILE); \
 	fi
 
 headers:
 	@echo "Organisation des fichiers d'en-tête..."
-	@echo "" > $(SRC_DIR)/$(HEADER_FILE)
-	@$(UPDATEFILE) $(DEFAULT_DEF) >> $(SRC_DIR)/$(HEADER_FILE)
-	@echo "" >> $(SRC_DIR)/$(HEADER_FILE);
+	@echo "" > $(HEADER_DIR)/$(HEADER_FILE)
+	@$(UPDATEFILE2) $(DEFAULT_DEF) >> $(HEADER_DIR)/$(HEADER_FILE)
+	@echo "" >> $(HEADER_DIR)/$(HEADER_FILE);
 
 	@echo "#ifndef CLASS_HPP\n# define CLASS_HPP\n" > $(SRC_DIR)/class.hpp
 
@@ -123,7 +80,7 @@ fclean: clean
 	@echo "Suppression de tous les fichiers inutiles..."
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(INCLUDE_DIR)
-	@rm -rf $(OUT_DIR)/$(NAME_OUT)
+	@rm -rf $(NAME_OUT)
 
 ffclean: fclean
 	@echo "Suppression de tous les fichiers et dossiers..."
@@ -135,5 +92,5 @@ re: fclean all
 
 # Exécuter le programme compilé
 run:
-	@echo "Exécution du programme... ./$(OUT_DIR)/$(NAME_OUT)\n------------------------------\n"
-	@./$(OUT_DIR)/$(NAME_OUT)
+	@echo "Exécution du programme... ./$(NAME_OUT)\n------------------------------\n"
+	@./$(NAME_OUT)
