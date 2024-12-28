@@ -43,6 +43,8 @@ all: prepare headers cmake
 
 # Préparer les dossiers et fichiers nécessaires
 prepare:
+	@echo "Installation des dépendances..."
+	@sudo apt install -y $(DEPS)
 	@echo "Préparation des dossiers et fichiers..."
 	@mkdir -p $(SRC_DIR)
 	@mkdir -p $(SRC_DIR)/$(NAME_CAMEL)
