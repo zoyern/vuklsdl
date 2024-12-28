@@ -13,7 +13,7 @@ ifeq ($(OS_NAME),Linux)
 	ifeq ($(DISTRO),ubuntu)
 		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
 	else ifeq ($(DISTRO),fedora)
-		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf groupinstall "Development Tools" && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
 	else
 		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
 	endif
