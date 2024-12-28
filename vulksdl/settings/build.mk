@@ -3,22 +3,24 @@ NAME = vulksdl
 NAME_OUT = vulksdl
 NAME_UPPER = $(shell echo $(NAME) | tr a-z A-Z)
 NAME_CAMEL = $(shell echo $(NAME) | sed -r 's/(^|_)([a-z])/\U\2/g')
-OS_NAME = $(shell uname -s)
 
 # Dépendances spécifiques
-ifeq ($(OS_NAME),Linux)  # Cas Linux
-    DISTRO = $(shell cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
-    ifeq ($(DISTRO),ubuntu)
-   		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
-	ifeq ($(DISTRO),fedora)
-   		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools cmake git vulkan-tools vulkan-loader-devel SDL2-devel
-    else
-        $(error "Système Linux non supporté")
-    endif
-else ifeq ($(OS_NAME),Darwin)  # Cas macOS
-    DEPS = brew install cmake git vulkan-loader sdl2
+OS_NAME = $(shell uname -s | tr -d '[:space:]')
+DISTRO = $(shell cat /etc/os-release | grep '^ID=' | cut -d'=' -f2 | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+
+# Dépendances spécifiques
+ifeq ($(OS_NAME),Linux)
+	ifeq ($(DISTRO),ubuntu)
+		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+	else ifeq ($(DISTRO),fedora)
+		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+	else
+		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
+	endif
+else ifeq ($(OS_NAME),Darwin)
+	DEPS = brew install cmake git vulkan-loader sdl2
 else
-    $(error "Système non supporté")
+	$(error "Système non supporté OS_NAME='$(OS_NAME)'")
 endif
 
 CMAKEVER = 3.10
