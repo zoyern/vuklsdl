@@ -32,9 +32,9 @@ endif
 # Dépendances spécifiques
 ifeq ($(OS_NAME),Linux)
 	ifeq ($(DISTRO),ubuntu)
-		DEPS = sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+		DEPS = sudo apt update -y && sudo apt upgrade -y && sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
     else ifeq ($(DISTRO),fedora)
-		DEPS = sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+		DEPS = sudo dnf update -y && sudo dnf upgrade -y && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
 	else
 		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
 	endif
