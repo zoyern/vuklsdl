@@ -3,7 +3,7 @@ include settings/build.mk
 .PHONY: all clean fclean re install prepare cmake run headers
 
 # Compilation complète
-all: prepare headers cmake
+all: display-info prepare headers cmake
 	@$(MAKE) -C $(CMAKE_DIR)
 	@echo "Compilation terminée ! Lancement : make run"
 
@@ -63,6 +63,12 @@ headers:
 	@echo "#endif" >> $(SRC_DIR)/class.hpp
 	@cat $(SRC_DIR)/class.hpp > $(INCLUDE_DIR)/class.hpp
 
+display-info:
+	@echo "Mode d'affichage sélectionné : $(DISPLAY_MODE)"
+	@echo "WAYLAND_DISPLAY=$(WAYLAND_DISPLAY)"
+	@echo "DISPLAY=$(DISPLAY)"
+	@echo "SDL_VIDEODRIVER=$(DISPLAY_MODE)"
+
 # Installer les dépendances nécessaires
 install:
 	@echo "Installation des dépendances..."
@@ -94,5 +100,6 @@ re: fclean all
 
 # Exécuter le programme compilé
 run:
+	@echo "Mode graphique utilisé : $(DISPLAY_MODE)"
 	@echo "Exécution du programme... ./$(NAME_OUT)\n------------------------------\n"
-	@./$(NAME_OUT)
+	@bash -c "$(DISPLAY_CMD) && ./$(NAME_OUT)"

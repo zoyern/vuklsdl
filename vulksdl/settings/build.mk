@@ -8,12 +8,33 @@ NAME_CAMEL = $(shell echo $(NAME) | sed -r 's/(^|_)([a-z])/\U\2/g')
 OS_NAME = $(shell uname -s | tr -d '[:space:]')
 DISTRO = $(shell cat /etc/os-release | grep '^ID=' | cut -d'=' -f2 | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
 
+# Détection de l'environnement graphique
+ifeq ($(OS_NAME),Linux)
+	ifdef WAYLAND_DISPLAY
+		USE_WAYLAND := 1
+	else
+		USE_WAYLAND := 0
+	endif
+	ifeq ($(USE_WAYLAND),1)
+		ifneq ($(DISPLAY),)
+			DISPLAY_MODE=x11
+			DISPLAY_CMD=export SDL_VIDEODRIVER=x11 && export DISPLAY=$(shell ip route | grep default | awk '{print $$3}'):0.0
+		else
+			DISPLAY_MODE=wayland
+			DISPLAY_CMD=export SDL_VIDEODRIVER=wayland
+		endif
+	else
+		DISPLAY_MODE=x11
+		DISPLAY_CMD=export SDL_VIDEODRIVER=x11 && export DISPLAY=$(shell ip route | grep default | awk '{print $$3}'):0.0
+	endif
+endif
+
 # Dépendances spécifiques
 ifeq ($(OS_NAME),Linux)
 	ifeq ($(DISTRO),ubuntu)
-		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
-	else ifeq ($(DISTRO),fedora)
-		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+		DEPS = sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+    else ifeq ($(DISTRO),fedora)
+		DEPS = sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
 	else
 		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
 	endif
@@ -21,8 +42,8 @@ else ifeq ($(OS_NAME),Darwin)
 	DEPS = brew install cmake git vulkan-loader sdl2
 else ifeq ($(OS_NAME),MINGW64_NT-10.0)
 	DEPS = pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain \
-	       mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-libs \
-	       mingw-w64-x86_64-vulkan-loader mingw-w64-x86_64-SDL2
+			mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-libs \
+			mingw-w64-x86_64-vulkan-loader mingw-w64-x86_64-SDL2
 else ifeq ($(OS_NAME),Android)
 	DEPS = sdkmanager "cmake;3.22.1" "ndk;21.4.7075529"
 else
