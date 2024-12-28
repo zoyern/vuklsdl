@@ -102,4 +102,4 @@ re: fclean all
 run:
 	@echo "Mode graphique utilisé : $(DISPLAY_MODE)"
 	@echo "Exécution du programme... ./$(NAME_OUT)\n------------------------------\n"
-	@bash -c "$(DISPLAY_CMD) && ./$(NAME_OUT)"
+	@./$(NAME_OUT)
