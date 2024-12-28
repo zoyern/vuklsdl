@@ -18,14 +18,14 @@ ifeq ($(OS_NAME),Linux)
 	ifeq ($(USE_WAYLAND),1)
 		ifneq ($(DISPLAY),)
 			DISPLAY_MODE=x11
-			DISPLAY_CMD=export SDL_VIDEODRIVER=x11 && export DISPLAY=$(shell ip route | grep default | awk '{print $$3}'):0.0
+			DISPLAY_CMD=export SDL_VIDEODRIVER=x11
 		else
 			DISPLAY_MODE=wayland
 			DISPLAY_CMD=export SDL_VIDEODRIVER=wayland
 		endif
 	else
 		DISPLAY_MODE=x11
-		DISPLAY_CMD=export SDL_VIDEODRIVER=x11 && export DISPLAY=$(shell ip route | grep default | awk '{print $$3}'):0.0
+		DISPLAY_CMD=export SDL_VIDEODRIVER=x11
 	endif
 endif
 
