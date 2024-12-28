@@ -10,8 +10,8 @@ ifeq ($(OS_NAME),Linux)  # Cas Linux
     DISTRO = $(shell cat /etc/os-release | grep '^ID=' | cut -d'=' -f2)
     ifeq ($(DISTRO),ubuntu)
    		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
-    else ifeq ($(DISTRO),fedora)
-    	DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+	ifeq ($(DISTRO),fedora)
+   		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools cmake git vulkan-tools vulkan-loader-devel SDL2-devel
     else
         $(error "Système Linux non supporté")
     endif
