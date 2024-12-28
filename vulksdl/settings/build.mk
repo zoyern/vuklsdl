@@ -11,14 +11,20 @@ DISTRO = $(shell cat /etc/os-release | grep '^ID=' | cut -d'=' -f2 | tr -d '[:sp
 # Dépendances spécifiques
 ifeq ($(OS_NAME),Linux)
 	ifeq ($(DISTRO),ubuntu)
-		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
+		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo apt install -y build-essential cmake g++ git vulkan-tools vulkan-utility-libraries-dev libvulkan-dev libsdl2-dev libsdl2-2.0-0
 	else ifeq ($(DISTRO),fedora)
-		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf install -y @development-tools cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+		DEPS = export DISPLAY=$(ip route | grep default | awk '{print $3}'):0.0 && sudo dnf groupinstall "Development Tools" && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
 	else
 		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
 	endif
 else ifeq ($(OS_NAME),Darwin)
 	DEPS = brew install cmake git vulkan-loader sdl2
+else ifeq ($(OS_NAME),MINGW64_NT-10.0)
+	DEPS = pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain \
+	       mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-libs \
+	       mingw-w64-x86_64-vulkan-loader mingw-w64-x86_64-SDL2
+else ifeq ($(OS_NAME),Android)
+	DEPS = sdkmanager "cmake;3.22.1" "ndk;21.4.7075529"
 else
 	$(error "Système non supporté OS_NAME='$(OS_NAME)'")
 endif
