@@ -32,9 +32,9 @@ endif
 # Dépendances spécifiques
 ifeq ($(OS_NAME),Linux)
 	ifeq ($(DISTRO),ubuntu)
-		DEPS = sudo apt update -y && sudo apt upgrade -y && sudo apt install -y build-essential cmake g++ git vulkan-tools libvulkan-dev libsdl2-dev libsdl2-2.0-0
+		DEPS = sudo apt update -y && sudo apt upgrade -y && sudo apt install -y build-essential cmake g++ git vulkan-tools libvulkan-dev glslang-tools glslc libsdl2-dev libsdl2-2.0-0
     else ifeq ($(DISTRO),fedora)
-		DEPS = sudo dnf update -y && sudo dnf upgrade -y && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel SDL2-devel
+		DEPS = sudo dnf update -y && sudo dnf upgrade -y && sudo dnf install -y @development-tools gcc-c++ cmake git vulkan-tools vulkan-loader-devel glslang-tools glslc SDL2-devel
 	else
 		$(error "Système Linux non supporté OS_NAME='$(OS_NAME)' DISTRO='$(DISTRO)'")
 	endif
@@ -52,8 +52,11 @@ endif
 
 CMAKEVER = 3.10
 
+LIBS = qpp 
+
 # Répertoires
 SRC_DIR = src
+LIBS_DIR = libs
 SHADERS_DIR = shaders
 BUILD_DIR = build
 MAIN_DIR = $(SRC_DIR)
@@ -80,6 +83,7 @@ UPDATEFILE2	= sed -e 's|{{NAME}}|$(NAME)|g' \
 				-e 's|{{OS_NAME}}|$(OS_NAME)|g' \
 				-e 's|{{DEPS}}|$(DEPS)|g' \
 				-e 's|{{CMAKEVER}}|$(CMAKEVER)|g' \
+				-e 's|{{LIBS_DIR}}|$(LIBS_DIR)|g' \
 				-e 's|{{SRC_DIR}}|$(SRC_DIR)|g' \
 				-e 's|{{SHADERS_DIR}}|$(SHADERS_DIR)|g' \
 				-e 's|{{BUILD_DIR}}|$(BUILD_DIR)|g' \

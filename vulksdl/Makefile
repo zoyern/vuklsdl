@@ -69,6 +69,19 @@ display-info:
 	@echo "DISPLAY=$(DISPLAY)"
 	@echo "SDL_VIDEODRIVER=$(DISPLAY_MODE)"
 
+# Installer les dépendances et cloner QPP uniquement si nécessaire
+qpp:
+	@sudo apt install -y cmake g++ git libeigen3-dev libsdl2-dev libvulkan-dev
+	@mkdir -p $(LIBS_DIR)
+	@if [ ! -d "$(LIBS_DIR)/qpp" ]; then \
+	    echo "Clonage de QPP..."; \
+	    git clone https://github.com/softwareQinc/qpp.git $(LIBS_DIR)/qpp; \
+	else \
+	    echo "QPP existe déjà dans $(LIBS_DIR)/qpp. Aucun clonage nécessaire."; \
+	fi
+	@echo "Fichiers QPP :"
+	@ls $(LIBS_DIR)/qpp/include/qpp | grep "qpp.hpp"
+
 # Installer les dépendances nécessaires
 install:
 	@echo "Installation des dépendances..."
@@ -94,6 +107,7 @@ ffclean: fclean
 	@echo "Suppression de tous les fichiers et dossiers..."
 	@rm -rf $(SHADERS_DIR)
 	@rm -rf $(SRC_DIR)
+	@rm -rf $(LIBS_DIR)
 
 # Recompiler proprement
 re: fclean all
