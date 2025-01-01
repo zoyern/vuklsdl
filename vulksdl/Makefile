@@ -27,7 +27,7 @@ prepare:
 	@if [ ! -f "$(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).hpp" ]; then \
 		$(UPDATEFILE2) $(DEFAULT_HPP) > $(SRC_DIR)/$(NAME_CAMEL)/$(NAME_CAMEL).hpp; \
 	fi
-	@if [ ! -f "$(MAIN_DIR)" ]; then \
+	@if [ ! -f "$(MAIN_DIR)/$(MAIN_FILE)" ]; then \
 		$(UPDATEFILE2) $(DEFAULT_MAIN) > $(MAIN_DIR)/$(MAIN_FILE); \
 	fi
 
